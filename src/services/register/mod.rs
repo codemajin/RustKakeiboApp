@@ -1,3 +1,7 @@
+//! 登録サービス
+//!
+//! このモジュールは、データをJOSNファイル`store/data.json`に登録する機能を提供します。
+
 use std::io;
 use std::str::FromStr;
 use chrono::NaiveDate;
@@ -5,6 +9,33 @@ use chrono::NaiveDate;
 use crate::models;
 use crate::services;
 
+/// 家計簿アプリの登録機能を提供します。
+///
+/// この関数は、ユーザーからの入力を受け付け、データをJSONファイルに登録します。
+///
+/// #### 例
+/// 
+/// ```rust
+/// run("store/data.json");
+/// ```
+///
+/// #### 詳細
+/// 
+/// この関数は以下の手順で動作します。
+/// 1. ユーザーに登録種別（収入または支出）を尋ねる。
+/// 2. ユーザーに品目名を尋ねる。
+/// 3. ユーザーにカテゴリ種別を尋ねる。
+/// 4. ユーザーに金額を尋ねる。
+/// 5. ユーザーに日付を尋ねる。
+/// 6. 入力された情報をもとに、`Item`インスタンスを作成する。
+/// 7. JSONファイルから既存のデータを読み込む。
+/// 8. 新しい`Item`インスタンスをデータに追加する。
+/// 9. 更新されたデータをJSONファイルに書き込む。
+///
+/// #### 注意
+/// 
+/// この関数は、ユーザーからの入力が正しい形式であることを前提としています。
+/// 不正な入力があった場合、プログラムはパニックになります。
 pub fn run(file_path: &str) {
     println!("収支の登録を行います");
     let register_type = input_register_type();
@@ -22,6 +53,19 @@ pub fn run(file_path: &str) {
     services::io::write_to_json(&data, file_path);
 }
 
+/// ユーザーに登録種別（収入または支出）を尋ね、数値で返します。
+///
+/// #### 例
+/// 
+/// ```rust
+/// let register_type = input_register_type();
+/// println!("登録種別: {}", register_type);
+/// ```
+///
+/// #### 注意
+/// 
+/// この関数は、ユーザーからの入力が正しい形式であることを前提としています。
+/// 不正な入力があった場合、プログラムはパニックになります。
 fn input_register_type() -> u8 {
     println!("登録種別を入力してください (0:収入, 1:支出)");
     let mut register_type = String::new();
@@ -37,6 +81,19 @@ fn input_register_type() -> u8 {
     register_type
 }
 
+/// ユーザーに品目名を尋ね、文字列で返します。
+///
+/// #### 例
+/// 
+/// ```rust
+/// let name = input_name();
+/// println!("品目名: {}", name);
+/// ```
+///
+/// #### 注意
+/// 
+/// この関数は、ユーザーからの入力が正しい形式であることを前提としています。
+/// 不正な入力があった場合、プログラムはパニックになります。
 fn input_name() -> String {
     println!("品目名を入力してください");
     let mut name = String::new();
@@ -45,6 +102,20 @@ fn input_name() -> String {
     name.trim().to_string()
 }
 
+/// ユーザーにカテゴリ種別を尋ね、数値で返します。
+///
+/// #### 例
+/// 
+/// ```rust
+/// let register_type = 1;
+/// let category_type = input_category_type(register_type);
+/// println!("カテゴリ種別: {}", category_type);
+/// ```
+///
+/// #### 注意
+/// 
+/// この関数は、ユーザーからの入力が正しい形式であることを前提としています。
+/// 不正な入力があった場合、プログラムはパニックになります。
 fn input_category_type(register_type: u8) ->  u8 {
     println!("カテゴリを入力してください");
     if register_type == 0 {
@@ -66,6 +137,19 @@ fn input_category_type(register_type: u8) ->  u8 {
     category_type
 }
 
+/// ユーザーに金額を尋ね、数値で返します。
+///
+/// #### 例
+/// 
+/// ```rust
+/// let price = input_price();
+/// println!("金額: {}", price);
+/// ```
+///
+/// #### 注意
+/// 
+/// この関数は、ユーザーからの入力が正しい形式であることを前提としています。
+/// 不正な入力があった場合、プログラムはパニックになります。
 fn input_price() -> u32 {
     println!("金額を入力してください");
     let mut price = String::new();
@@ -74,6 +158,19 @@ fn input_price() -> u32 {
     price.trim().parse().expect("金額は数値で入力してください")
 }
 
+/// ユーザーに日付を尋ね、`NaiveDate`オブジェクトで返します。
+///
+/// #### 例
+/// 
+/// ```rust
+/// let date = input_date();
+/// println!("日付: {}", date);
+/// ```
+///
+/// #### 注意
+/// 
+/// この関数は、ユーザーからの入力が正しい形式であることを前提としています。
+/// 不正な入力があった場合、プログラムはパニックになります。
 fn input_date() -> NaiveDate {
     println!("日付を入力してください");
     let mut date = String::new();
