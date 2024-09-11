@@ -23,3 +23,9 @@ $ mkdir store
 ```shell
 $ cargo run
 ```
+
+また、以下のコマンドを実行すると、ドキュメンテーションコメントからAPIリファレンスを作成できます。
+
+```shell
+$ cargo doc --no-deps <--document-private-items>
+```

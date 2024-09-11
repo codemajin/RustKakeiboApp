@@ -1,9 +1,23 @@
+//! データ入出力サービス
+//!
+//! このモジュールは、JOSNファイル`store/data.json`へのデータ入出力処理の機能を提供します。
+
 use std::fs::File;
 use std::io::BufReader;
 use std::io::prelude::*;
 
 use crate::models;
 
+/// JSONファイルからデータを読み込むか、新しいデータを作成します。
+/// 
+/// 指定されたファイルパスからデータを読み込みます。ファイルが存在しない場合は、新しいデータ（空のベクトル）を作成します。
+/// 
+/// #### 例
+/// 
+/// ```rust
+/// let file_path = "store/data.json";
+/// let data = read_data_or_create_new_data(file_path);
+/// ```
 pub fn read_data_or_create_new_data(file_path: &str) -> Vec<models::Item> {
     let file = File::open(file_path);
     match file {
@@ -18,6 +32,16 @@ pub fn read_data_or_create_new_data(file_path: &str) -> Vec<models::Item> {
     }
 }
 
+/// JSONファイルからデータを読み込みます。データが存在しない場合はパニックになります。
+/// 
+/// 指定されたファイルパスからデータを読み込みます。ファイルが存在しないか、データが空の場合はパニックになります。
+/// 
+/// #### 例
+/// 
+/// ```rust
+/// let file_path = "store/data.json";
+/// let data = read_data_or_panic(file_path);
+/// ```
 pub fn read_data_or_panic(file_path: &str) -> Vec<models::Item> {
     let file = File::open(file_path).expect("ファイルをオープンできませんでした");
     let buf_reader = BufReader::new(file);
@@ -30,6 +54,30 @@ pub fn read_data_or_panic(file_path: &str) -> Vec<models::Item> {
     data
 }
 
+/// データをJSONファイルに書き込みます。
+/// 
+/// 指定されたデータをJSON形式にシリアライズし、指定されたファイルパスに書き込みます。
+/// 
+/// #### 例
+/// 
+/// ```rust
+/// let file_path = "store/data.json";
+/// let data = vec![
+///     models::Item {
+///         name: String::from("給与"),
+///         category: Category::Income(IncomeCategory::Salary),
+///         price: 100000,
+///         date: NaiveDate::from_ymd_opt(2023, 1, 1).unwrap(),
+///     },
+///     models::Item {
+///         name: String::from("食費"),
+///         category: Category::Expense(ExpenseCategory::Food),
+///         price: 2000,
+///         date: NaiveDate::from_ymd_opt(2023, 2, 1).unwrap(),
+///     },
+/// ];
+/// write_to_json(&data, file_path);
+/// ```
 pub fn write_to_json(data: &Vec<models::Item>, file_path: &str) {
     let json_data = serde_json::to_string_pretty(data).expect("JSONへのシリアライズに失敗しました");
     let mut file = File::create(file_path).expect("書き込みファイルのオープンに失敗しました");
