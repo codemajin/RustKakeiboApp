@@ -6,7 +6,7 @@
 //! #### 例
 //!
 //! ```rust
-//! use InputValidator;
+//! use kakeibo_app::services::validate::InputValidator;
 //!
 //! let service_type = 0;
 //! let register_type = 1;
@@ -30,8 +30,8 @@ impl InputValidator {
     /// #### 例
     /// 
     /// ```rust
-    /// use InputValidator;
-    ///
+    /// use kakeibo_app::services::validate::InputValidator;
+    /// 
     /// let service_type = 0;
     /// InputValidator::validate_service_type(service_type);
     /// ```
@@ -51,8 +51,8 @@ impl InputValidator {
     /// #### 例
     /// 
     /// ```rust
-    /// use InputValidator;
-    ///
+    /// use kakeibo_app::services::validate::InputValidator;
+    /// 
     /// let register_type = 1;
     /// InputValidator::validate_register_type(register_type);
     /// ```
@@ -72,8 +72,8 @@ impl InputValidator {
     /// #### 例
     /// 
     /// ```rust
-    /// use InputValidator;
-    ///
+    /// use kakeibo_app::services::validate::InputValidator;
+    /// 
     /// let register_type = 1;
     /// let category_type = 2;
     /// InputValidator::validate_category_type(register_type, category_type);
@@ -90,5 +90,50 @@ impl InputValidator {
                 _ => panic!("カテゴリ入力値が不正です")
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod validate_test {
+    use super::*;
+
+    #[test]
+    fn test_validate_service_type_for_ok() {
+        InputValidator::validate_service_type(0);
+        InputValidator::validate_service_type(1);
+    }
+
+    #[test]
+    #[should_panic(expected="入力値が不正です")]
+    fn test_validate_service_type_for_ng() {
+        InputValidator::validate_service_type(2);
+    }
+
+    #[test]
+    fn test_validate_register_type_for_ok() {
+        InputValidator::validate_register_type(0);
+        InputValidator::validate_register_type(1);
+    }
+
+    #[test]
+    #[should_panic(expected="登録種別の入力値が不正です")]
+    fn test_validate_register_type_for_ng() {
+        InputValidator::validate_register_type(2);
+    }
+
+    #[test]
+    fn test_validate_category_type_for_ok() {
+        InputValidator::validate_category_type(0, 1);
+        InputValidator::validate_category_type(0, 1);
+        InputValidator::validate_category_type(0, 2);
+        InputValidator::validate_category_type(1, 1);
+        InputValidator::validate_category_type(1, 1);
+        InputValidator::validate_category_type(1, 2);
+    }
+
+    #[test]
+    #[should_panic(expected="カテゴリ入力値が不正です")]
+    fn test_validate_category_type_for_ng() {
+        InputValidator::validate_category_type(0, 3);
     }
 }

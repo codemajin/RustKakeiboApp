@@ -15,7 +15,8 @@ use crate::{models, services};
 /// #### 例
 ///
 /// ```rust
-/// run("store/data.json");
+/// use kakeibo_app::services;
+/// services::summarize::run("store/data.json");
 /// ```
 pub fn run(file_path: &str) {
     println!("家計簿の集計を行います");
@@ -36,13 +37,6 @@ pub fn run(file_path: &str) {
 /// 家計簿データから対象の年月の集合を取得する。
 ///
 /// この関数は、家計簿データから各項目の年月を取得し、重複を除去した集合を返します。
-///
-/// #### 例
-///
-/// ```rust
-/// let data = services::io::read_data_or_panic("household_account.csv");
-/// let target_dates = get_target_dates(&data);
-/// ```
 fn get_target_dates(data: &Vec<models::Item>) -> BTreeSet<NaiveDate> {
     let target_dates: BTreeSet<_> = data.iter().map(|item| {
         item.get_first_day()
@@ -53,14 +47,6 @@ fn get_target_dates(data: &Vec<models::Item>) -> BTreeSet<NaiveDate> {
 /// 家計簿データから指定された年月のデータを抽出する。
 ///
 /// この関数は、家計簿データから指定された年月に一致する項目を抽出し、ベクタとして返します。
-///
-/// #### 例
-///
-/// ```rust
-/// let data = services::io::read_data_or_panic("household_account.csv");
-/// let first_date = NaiveDate::from_ymd(2023, 1, 1);
-/// let filtered_data = get_filtered_data(&data, first_date);
-/// ```
 fn get_filtered_data(data: &Vec<models::Item>, first_date: NaiveDate) -> Vec<&models::Item> {
     let filtered_data: Vec<_> = data.iter().filter(|item| {
         (item.get_year() == first_date.year()) && (item.get_month() == first_date.month())
@@ -71,15 +57,6 @@ fn get_filtered_data(data: &Vec<models::Item>, first_date: NaiveDate) -> Vec<&mo
 /// 家計簿データの金額を集計する。
 ///
 /// この関数は、家計簿データの金額を合計し、集計結果を返します。
-///
-/// #### 例
-///
-/// ```rust
-/// let data = services::io::read_data_or_panic("household_account.csv");
-/// let first_date = NaiveDate::from_ymd(2023, 1, 1);
-/// let filtered_data = get_filtered_data(&data, first_date);
-/// let sum = summarize_data(&filtered_data);
-/// ```
 fn summarize_data(data: &Vec<&models::Item>) -> i32 {
     let mut sum = 0;
     for item in data {
@@ -91,14 +68,6 @@ fn summarize_data(data: &Vec<&models::Item>) -> i32 {
 /// 日付を "年/月" の形式でフォーマットする。
 ///
 /// この関数は、指定された日付を "年/月" の形式でフォーマットし、文字列として返します。
-///
-/// #### 例
-///
-/// ```rust
-/// let date = NaiveDate::from_ymd(2023, 1, 1);
-/// let formatted_date = format_date(date);
-/// assert_eq!(formatted_date, "2023/1");
-/// ```
 fn format_date(date: NaiveDate) -> String {
     format!("{}/{}", date.year(), date.month())
 }
@@ -106,17 +75,6 @@ fn format_date(date: NaiveDate) -> String {
 /// 金額を符号付きでフォーマットする。
 ///
 /// この関数は、指定された金額を符号付きでフォーマットし、文字列として返します。正の金額にはプラス記号が付きます。
-///
-/// #### 例
-///
-/// ```rust
-/// let price1 = 1000;
-/// let price2 = -2000;
-/// let formatted_price1 = format_price(price1);
-/// let formatted_price2 = format_price(price2);
-/// assert_eq!(formatted_price1, "+1000");
-/// assert_eq!(formatted_price2, "-2000");
-/// ```
 fn format_price(price: i32) -> String {
     if price > 0 {
         format!("+{}", price)
@@ -128,15 +86,6 @@ fn format_price(price: i32) -> String {
 /// 集計結果を表形式で出力する。
 ///
 /// この関数は、集計結果を "年/月 の収支は +/-金額 円でした" の形式で出力します。
-///
-/// #### 例
-///
-/// ```rust
-/// let mut result_table = BTreeMap::new();
-/// result_table.insert(NaiveDate::from_ymd(2023, 1, 1), 1000);
-/// result_table.insert(NaiveDate::from_ymd(2023, 2, 1), -2000);
-/// print_table(result_table);
-/// ```
 fn print_table(result_table: BTreeMap<NaiveDate, i32>) {
     for result in result_table {
         let date = format_date(result.0);
@@ -193,5 +142,37 @@ mod summarize_test {
         expected.insert(NaiveDate::from_ymd_opt(2022, 4, 1).unwrap());
 
         assert_eq!(get_target_dates(&test_data), expected);
+    }
+
+    #[test]
+    fn test_get_filtered_data() {
+        let test_data = get_test_data();
+        let first_date = NaiveDate::from_ymd_opt(2022, 4, 20).unwrap();
+        let expected = vec![&test_data[4]];
+
+        assert_eq!(get_filtered_data(&test_data, first_date), expected);
+    }
+
+    #[test]
+    fn test_summarize_data() {
+        let data = get_test_data();
+        let test_data = vec![&data[0], &data[1], &data[2]];
+        let expected: i32 = data[0..=2].iter().map(|item| item.get_price_for_summary()).sum();
+
+        assert_eq!(summarize_data(&test_data), expected);
+    }
+
+    #[test]
+    fn test_format_date() {
+        let date = NaiveDate::from_ymd_opt(2022, 4, 20).unwrap();
+        let expected = "2022/4";
+
+        assert_eq!(format_date(date), expected);
+    }
+
+    #[test]
+    fn test_format_price() {
+        assert_eq!(format_price(1000), "+1000");
+        assert_eq!(format_price(-1000), "-1000");
     }
 }

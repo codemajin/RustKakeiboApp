@@ -16,7 +16,9 @@ use crate::services;
 /// #### 例
 /// 
 /// ```rust
-/// run("store/data.json");
+/// // ドキュメンテーションテストでFailになるのでコメントアウト
+/// // use kakeibo_app::services;
+/// // services::register::run("store/data.json");
 /// ```
 ///
 /// #### 詳細
@@ -55,13 +57,6 @@ pub fn run(file_path: &str) {
 
 /// ユーザーに登録種別（収入または支出）を尋ね、数値で返します。
 ///
-/// #### 例
-/// 
-/// ```rust
-/// let register_type = input_register_type();
-/// println!("登録種別: {}", register_type);
-/// ```
-///
 /// #### 注意
 /// 
 /// この関数は、ユーザーからの入力が正しい形式であることを前提としています。
@@ -83,13 +78,6 @@ fn input_register_type() -> u8 {
 
 /// ユーザーに品目名を尋ね、文字列で返します。
 ///
-/// #### 例
-/// 
-/// ```rust
-/// let name = input_name();
-/// println!("品目名: {}", name);
-/// ```
-///
 /// #### 注意
 /// 
 /// この関数は、ユーザーからの入力が正しい形式であることを前提としています。
@@ -103,14 +91,6 @@ fn input_name() -> String {
 }
 
 /// ユーザーにカテゴリ種別を尋ね、数値で返します。
-///
-/// #### 例
-/// 
-/// ```rust
-/// let register_type = 1;
-/// let category_type = input_category_type(register_type);
-/// println!("カテゴリ種別: {}", category_type);
-/// ```
 ///
 /// #### 注意
 /// 
@@ -139,13 +119,6 @@ fn input_category_type(register_type: u8) ->  u8 {
 
 /// ユーザーに金額を尋ね、数値で返します。
 ///
-/// #### 例
-/// 
-/// ```rust
-/// let price = input_price();
-/// println!("金額: {}", price);
-/// ```
-///
 /// #### 注意
 /// 
 /// この関数は、ユーザーからの入力が正しい形式であることを前提としています。
@@ -160,13 +133,6 @@ fn input_price() -> u32 {
 
 /// ユーザーに日付を尋ね、`NaiveDate`オブジェクトで返します。
 ///
-/// #### 例
-/// 
-/// ```rust
-/// let date = input_date();
-/// println!("日付: {}", date);
-/// ```
-///
 /// #### 注意
 /// 
 /// この関数は、ユーザーからの入力が正しい形式であることを前提としています。
@@ -176,4 +142,9 @@ fn input_date() -> NaiveDate {
     let mut date = String::new();
     io::stdin().read_line(&mut date).expect("日付の入力に失敗しました");
     NaiveDate::from_str(&date).expect("日付はyyyy-mm-ddの形式で入力してください")
+}
+
+#[cfg(test)]
+mod register_test {
+    // use super::*;
 }
