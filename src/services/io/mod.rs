@@ -15,8 +15,9 @@ use crate::models;
 /// #### 例
 /// 
 /// ```rust
+/// use kakeibo_app::services::io;
 /// let file_path = "store/data.json";
-/// let data = read_data_or_create_new_data(file_path);
+/// let data = io::read_data_or_create_new_data(file_path);
 /// ```
 pub fn read_data_or_create_new_data(file_path: &str) -> Vec<models::Item> {
     let file = File::open(file_path);
@@ -39,8 +40,9 @@ pub fn read_data_or_create_new_data(file_path: &str) -> Vec<models::Item> {
 /// #### 例
 /// 
 /// ```rust
+/// use kakeibo_app::services::io;
 /// let file_path = "store/data.json";
-/// let data = read_data_or_panic(file_path);
+/// let data = io::read_data_or_panic(file_path);
 /// ```
 pub fn read_data_or_panic(file_path: &str) -> Vec<models::Item> {
     let file = File::open(file_path).expect("ファイルをオープンできませんでした");
@@ -61,22 +63,26 @@ pub fn read_data_or_panic(file_path: &str) -> Vec<models::Item> {
 /// #### 例
 /// 
 /// ```rust
+/// use kakeibo_app::services::io;
+/// use kakeibo_app::models::{Item, Category, IncomeCategory, ExpenseCategory};
+/// use chrono::{NaiveDate, Datelike};
+/// 
 /// let file_path = "store/data.json";
 /// let data = vec![
-///     models::Item {
-///         name: String::from("給与"),
-///         category: Category::Income(IncomeCategory::Salary),
-///         price: 100000,
-///         date: NaiveDate::from_ymd_opt(2023, 1, 1).unwrap(),
-///     },
-///     models::Item {
-///         name: String::from("食費"),
-///         category: Category::Expense(ExpenseCategory::Food),
-///         price: 2000,
-///         date: NaiveDate::from_ymd_opt(2023, 2, 1).unwrap(),
-///     },
+///     Item::new(
+///         String::from("給与"),
+///         Category::Income(IncomeCategory::Salary),
+///         100000,
+///         NaiveDate::from_ymd_opt(2023, 1, 1).unwrap(),
+///     ),
+///     Item::new(
+///         String::from("食費"),
+///         Category::Expense(ExpenseCategory::Food),
+///         2000,
+///         NaiveDate::from_ymd_opt(2023, 2, 1).unwrap(),
+///     ),
 /// ];
-/// write_to_json(&data, file_path);
+/// io::write_to_json(&data, file_path);
 /// ```
 pub fn write_to_json(data: &Vec<models::Item>, file_path: &str) {
     let json_data = serde_json::to_string_pretty(data).expect("JSONへのシリアライズに失敗しました");

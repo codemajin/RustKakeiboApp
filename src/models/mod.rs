@@ -15,6 +15,8 @@ use chrono::{NaiveDate, Datelike};
 /// #### 例
 /// 
 /// ```rust
+/// use kakeibo_app::models::IncomeCategory;
+/// 
 /// let salary = IncomeCategory::Salary;
 /// let bonus = IncomeCategory::Bonus;
 /// let other = IncomeCategory::Other;
@@ -36,6 +38,8 @@ pub enum IncomeCategory {
 /// #### 例
 /// 
 /// ```rust
+/// use kakeibo_app::models::ExpenseCategory;
+/// 
 /// let food = ExpenseCategory::Food;
 /// let hobby = ExpenseCategory::Hobby;
 /// let other = ExpenseCategory::Other;
@@ -55,10 +59,12 @@ pub enum ExpenseCategory {
 ///
 /// #### 例
 /// 
-/// ```rust
+/// ~~~rust
+/// use kakeibo_app::models::{Category, IncomeCategory, ExpenseCategory};
+/// 
 /// let income = Category::Income(IncomeCategory::Salary);
 /// let expense = Category::Expense(ExpenseCategory::Food);
-/// ```
+/// ~~~
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
 pub enum Category {
     Income(IncomeCategory),
@@ -76,12 +82,15 @@ pub enum Category {
 /// #### 例
 /// 
 /// ```rust
-/// let item = Item {
-///     name: String::from("給与"),
-///     category: Category::Income(IncomeCategory::Salary),
-///     price: 100000,
-///     date: NaiveDate::from_ymd_opt(2023, 1, 1).unwrap(),
-/// };
+/// use kakeibo_app::models::{Item, Category, IncomeCategory};
+/// use chrono::{NaiveDate, Datelike};
+/// 
+/// let item = Item::new(
+///     String::from("給与"),
+///     Category::Income(IncomeCategory::Salary),
+///     100000,
+///     NaiveDate::from_ymd_opt(2023, 1, 1).unwrap(),
+/// );
 /// ```
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
 pub struct Item {
@@ -104,6 +113,9 @@ impl Item {
     /// #### 例
     /// 
     /// ```rust
+    /// use kakeibo_app::models::{Item, Category, IncomeCategory};
+    /// use chrono::{NaiveDate, Datelike};
+    /// 
     /// let item = Item::new(
     ///     String::from("給与"),
     ///     Category::Income(IncomeCategory::Salary),
@@ -125,6 +137,8 @@ impl Item {
     /// #### 例
     /// 
     /// ```rust
+    /// use kakeibo_app::models::{Item, Category, IncomeCategory};
+    /// 
     /// let category = Item::get_category(0, 0);
     /// assert_eq!(category, Category::Income(IncomeCategory::Salary));
     /// ```
@@ -151,12 +165,15 @@ impl Item {
     /// #### 例
     /// 
     /// ```rust
-    /// let item = Item {
-    ///     name: String::from("給与"),
-    ///     category: Category::Income(IncomeCategory::Salary),
-    ///     price: 100000,
-    ///     date: NaiveDate::from_ymd_opt(2023, 1, 1).unwrap(),
-    /// };
+    /// use kakeibo_app::models::{Item, Category, IncomeCategory};
+    /// use chrono::{NaiveDate, Datelike};
+    /// 
+    /// let item = Item::new(
+    ///     String::from("給与"),
+    ///     Category::Income(IncomeCategory::Salary),
+    ///     100000,
+    ///     NaiveDate::from_ymd_opt(2023, 1, 1).unwrap(),
+    /// );
     /// assert_eq!(item.get_year(), 2023);
     /// ```
     pub fn get_year(&self) -> i32 {
@@ -168,12 +185,15 @@ impl Item {
     /// #### 例
     /// 
     /// ```rust
-    /// let item = Item {
-    ///     name: String::from("給与"),
-    ///     category: Category::Income(IncomeCategory::Salary),
-    ///     price: 100000,
-    ///     date: NaiveDate::from_ymd_opt(2023, 1, 1).unwrap(),
-    /// };
+    /// use kakeibo_app::models::{Item, Category, IncomeCategory};
+    /// use chrono::{NaiveDate, Datelike};
+    /// 
+    /// let item = Item::new(
+    ///     String::from("給与"),
+    ///     Category::Income(IncomeCategory::Salary),
+    ///     100000,
+    ///     NaiveDate::from_ymd_opt(2023, 1, 1).unwrap(),
+    /// );
     /// assert_eq!(item.get_month(), 1);
     /// ```
     pub fn get_month(&self) -> u32 {
@@ -185,12 +205,15 @@ impl Item {
     /// #### 例
     /// 
     /// ```rust
-    /// let item = Item {
-    ///     name: String::from("給与"),
-    ///     category: Category::Income(IncomeCategory::Salary),
-    ///     price: 100000,
-    ///     date: NaiveDate::from_ymd_opt(2023, 1, 15).unwrap(),
-    /// };
+    /// use kakeibo_app::models::{Item, Category, IncomeCategory};
+    /// use chrono::{NaiveDate, Datelike};
+    /// 
+    /// let item = Item::new(
+    ///     String::from("給与"),
+    ///     Category::Income(IncomeCategory::Salary),
+    ///     100000,
+    ///     NaiveDate::from_ymd_opt(2023, 1, 15).unwrap(),
+    /// );
     /// assert_eq!(item.get_first_day(), NaiveDate::from_ymd_opt(2023, 1, 1).unwrap());
     /// ```
     pub fn get_first_day(&self) -> NaiveDate {
@@ -204,18 +227,21 @@ impl Item {
     /// #### 例
     /// 
     /// ```rust
-    /// let income_item = Item {
-    ///     name: String::from("給与"),
-    ///     category: Category::Income(IncomeCategory::Salary),
-    ///     price: 100000,
-    ///     date: NaiveDate::from_ymd_opt(2023, 1, 1).unwrap(),
-    /// };
-    /// let expense_item = Item {
-    ///     name: String::from("食費"),
-    ///     category: Category::Expense(ExpenseCategory::Food),
-    ///     price: 5000,
-    ///     date: NaiveDate::from_ymd_opt(2023, 1, 1).unwrap(),
-    /// };
+    /// use kakeibo_app::models::{Item, Category, IncomeCategory, ExpenseCategory};
+    /// use chrono::{NaiveDate, Datelike};
+    /// 
+    /// let income_item = Item::new(
+    ///     String::from("給与"),
+    ///     Category::Income(IncomeCategory::Salary),
+    ///     100000,
+    ///     NaiveDate::from_ymd_opt(2023, 1, 1).unwrap(),
+    /// );
+    /// let expense_item = Item::new(
+    ///     String::from("食費"),
+    ///     Category::Expense(ExpenseCategory::Food),
+    ///     5000,
+    ///     NaiveDate::from_ymd_opt(2023, 1, 1).unwrap(),
+    /// );
     /// assert_eq!(income_item.get_price_for_summary(), 100000);
     /// assert_eq!(expense_item.get_price_for_summary(), -5000);
     /// ```
